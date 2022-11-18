@@ -13,7 +13,9 @@ export class Annotation {
     public readonly annotation_level: 'failure' | 'notice' | 'warning',
     public readonly title: string,
     public readonly message: string,
-    public readonly raw_details: string
+    public readonly raw_details: string,
+    public readonly class_name: string,
+    public readonly method_name: string
   ) {}
 }
 
@@ -78,7 +80,9 @@ export function testCaseAnnotation(testcase: any): Annotation {
     'failure',
     `Failed test ${methodname} in ${classname}`,
     message,
-    stacktrace
+    stacktrace,
+    classname,
+    methodname
   )
 }
 
@@ -91,10 +95,9 @@ export class TestResult {
 }
 
 function sanitizePath(filename: string): string {
-  if (filename.startsWith("/github/workspace"))
-    return relative("/github/workspace", filename);
-  else
-    return relative(process.cwd(), filename).replace(/\\/g, '/')
+  if (filename.startsWith('/github/workspace'))
+    return relative('/github/workspace', filename)
+  else return relative(process.cwd(), filename).replace(/\\/g, '/')
 }
 
 function getTestCases(testsuite: any): any[] {
